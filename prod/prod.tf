@@ -6,6 +6,6 @@ module "eks-vpc" {
   cluster_name    = "EKS-Cluster-Demo"
   node_group_name = "EKS-Node-Group-Demo"
   desired_nodes   = 1
-  max_nodes       = 2
+  max_nodes       = 1
   min_nodes       = 1
 }

@@ -10,7 +10,7 @@ data "aws_availability_zones" "available" {
 
 resource "aws_subnet" "subnets" {
   count = length(var.subnet_cidrs)
-
+ map_public_ip_on_launch = true
   vpc_id     = aws_vpc.vpc.id
   cidr_block = element(var.subnet_cidrs, count.index)
   availability_zone = element(data.aws_availability_zones.available.names, count.index % length(data.aws_availability_zones.available.names))
@@ -30,33 +30,47 @@ resource "aws_internet_gateway" "igw" {
   tags = var.common_tags
 }
 
-resource "aws_eip" "nat_ip" {
-  domain   = "vpc"
-
-  tags = var.common_tags
-}
-
-resource "aws_nat_gateway" "nat_gw" {
-  allocation_id = aws_eip.nat_ip.id
-  subnet_id     = aws_subnet.subnets[0].id
-
-  tags = var.common_tags
-}
-
-resource "aws_route_table" "rtb" {
+resource "aws_route_table" "public_rtb" {
   vpc_id = aws_vpc.vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gw.id
+    gateway_id = aws_internet_gateway.igw.id
   }
 
-  tags = var.common_tags
+  tags = {
+    Name = "public-rtb"
+  }
 }
 
-resource "aws_route_table_association" "private" {
+
+resource "aws_route_table_association" "public_rta" {
   count = length(aws_subnet.subnets)
 
   subnet_id      = element(aws_subnet.subnets.*.id, count.index)
-  route_table_id = aws_route_table.rtb.id
+  route_table_id = aws_route_table.public_rtb.id
 }
+
+# resource "aws_eip" "nat_ip" {
+#   domain   = "vpc"
+
+#   tags = var.common_tags
+# }
+
+# resource "aws_nat_gateway" "nat_gw" {
+#   allocation_id = aws_eip.nat_ip.id
+#   subnet_id     = aws_subnet.subnets[0].id
+
+#   tags = var.common_tags
+# }
+
+# resource "aws_route_table" "rtb" {
+#   vpc_id = aws_vpc.vpc.id
+
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     nat_gateway_id = aws_nat_gateway.nat_gw.id
+#   }
+
+#   tags = var.common_tags
+# }
