@@ -9,11 +9,11 @@ data "aws_availability_zones" "available" {
 }
 
 resource "aws_subnet" "subnets" {
-  count = length(var.subnet_cidrs)
- map_public_ip_on_launch = true
-  vpc_id     = aws_vpc.vpc.id
-  cidr_block = element(var.subnet_cidrs, count.index)
-  availability_zone = element(data.aws_availability_zones.available.names, count.index % length(data.aws_availability_zones.available.names))
+  count                   = length(var.subnet_cidrs)
+  map_public_ip_on_launch = true
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = element(var.subnet_cidrs, count.index)
+  availability_zone       = element(data.aws_availability_zones.available.names, count.index % length(data.aws_availability_zones.available.names))
 
   tags = merge(
     var.common_tags,
