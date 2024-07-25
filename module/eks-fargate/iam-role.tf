@@ -41,18 +41,22 @@ resource "aws_iam_role" "ng_role" {
     Version = "2012-10-17"
   })
 }
+resource "aws_iam_role" "fg_role" {
+  name = "EKS-Fargate-Execution-Role"
 
-resource "aws_iam_role_policy_attachment" "demo-AmazonEKSWorkerNodePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.ng_role.name
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "eks-fargate-pods.amazonaws.com"
+      }
+    }]
+    Version = "2012-10-17"
+  })
 }
 
-resource "aws_iam_role_policy_attachment" "demo-AmazonEKS_CNI_Policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.ng_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "demo-AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.ng_role.name
+resource "aws_iam_role_policy_attachment" "Demo-AmazonEKSFargatePodExecutionRolePolicy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+  role       = aws_iam_role.fg_role.name
 }

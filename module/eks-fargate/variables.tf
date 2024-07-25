@@ -27,22 +27,8 @@ variable "cluster_name" {
   description = "Name of EKS Cluster"
 }
 
-variable "node_group_name" {
+variable "fargate_profile_name" {
   type        = string
-  description = "Name of Node group in EKS cluster"
+  description = "Name of Fargate Profile"
 }
 
-variable "desired_nodes" {
-  type        = number
-  description = "Number of desired nodes"
-}
-
-variable "max_nodes" {
-  type        = number
-  description = "Number of maximum nodes"
-}
-
-variable "min_nodes" {
-  type        = number
-  description = "Number of minimum nodes"
-}
