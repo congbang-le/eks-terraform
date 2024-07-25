@@ -51,26 +51,4 @@ resource "aws_route_table_association" "public_rta" {
   route_table_id = aws_route_table.public_rtb.id
 }
 
-# resource "aws_eip" "nat_ip" {
-#   domain   = "vpc"
 
-#   tags = var.common_tags
-# }
-
-# resource "aws_nat_gateway" "nat_gw" {
-#   allocation_id = aws_eip.nat_ip.id
-#   subnet_id     = aws_subnet.subnets[0].id
-
-#   tags = var.common_tags
-# }
-
-# resource "aws_route_table" "rtb" {
-#   vpc_id = aws_vpc.vpc.id
-
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     nat_gateway_id = aws_nat_gateway.nat_gw.id
-#   }
-
-#   tags = var.common_tags
-# }
