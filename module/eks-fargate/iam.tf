@@ -27,20 +27,6 @@ resource "aws_iam_role_policy_attachment" "demo-AmazonEKSVPCResourceController" 
   role       = aws_iam_role.eks_role.name
 }
 
-resource "aws_iam_role" "ng_role" {
-  name = "EKS-Node-Group-Role"
-
-  assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      }
-    }]
-    Version = "2012-10-17"
-  })
-}
 resource "aws_iam_role" "fg_role" {
   name = "EKS-Fargate-Execution-Role"
 
